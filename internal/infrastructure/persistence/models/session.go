@@ -8,29 +8,30 @@ import (
 
 type Session struct {
 	gorm.Model
-	Id            string        `gorm:"primaryKey"`
-	Patients      Patients      `gorm:"type:VARCHAR(255)"`
-	Professionals Professionals `gorm:"type:VARCHAR(255)"`
+	Id            string `gorm:"primaryKey"`
+	Patients      []Patient
+	Professionals []Professional
 	StartDate     time.Time
 	TimeInMinutes time.Duration
 	Amount        float64
 	EndDate       time.Time
 	Notes         string
-	Cids          []Cid `gorm:"foreignKey:SessionId"`
+	Cids          string
 	Forms         string
 }
 
-type Patients []string
-type Professionals []string
-
-type Cid struct {
+type Patient struct {
 	gorm.Model
-	Id          uint `gorm:"primaryKey;autoIncrement";`
-	PatientId   string
-	Code        string
-	Name        string
-	Observation string
-	SessionId   string
+	Id        uint `gorm:"primaryKey;autoIncrement"`
+	PatientId string
+	SessionId string
+}
+
+type Professional struct {
+	gorm.Model
+	Id             uint `gorm:"primaryKey;autoIncrement"`
+	ProfessionalId string
+	SessionID      string
 }
 
 var Sessions []Session

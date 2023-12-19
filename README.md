@@ -1,2 +1,7 @@
+# prontu session
 
-<https://gorm.io/docs/has_many.html>
+- to generate migrations:
+
+  ```bash
+  atlas migrate diff --env gorm  
+  ```
