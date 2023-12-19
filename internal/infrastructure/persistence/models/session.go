@@ -3,16 +3,16 @@ package infrastructure
 import "time"
 
 type Session struct {
-	Id             string        `json:"id"`
-	PatientIds     []string      `json:"patientIds"`
-	ProfessionalId []string      `json:"professionalId"`
-	StartDate      time.Time     `json:"startDate"`
-	TimeInMinutes  time.Duration `json:"timeInMinutes"`
-	Amount         float64       `json:"amount"`
-	EndDate        time.Time     `json:"endDate"`
-	Notes          string        `json:"notes"`
-	Cids           []Cid         `json:"cids"`
-	Forms          []Form        `json:"forms"`
+	Id              string        `json:"id"`
+	PatientIds      []string      `json:"patientIds"`
+	ProfessionalIds []string      `json:"ProfessionalIds"`
+	StartDate       time.Time     `json:"startDate"`
+	TimeInMinutes   time.Duration `json:"timeInMinutes"`
+	Amount          float64       `json:"amount"`
+	EndDate         time.Time     `json:"endDate"`
+	Notes           string        `json:"notes"`
+	Cids            []Cid         `json:"cids"`
+	Forms           []Form        `json:"forms"`
 }
 
 type Cid struct {
