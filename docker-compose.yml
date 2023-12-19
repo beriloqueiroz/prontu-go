@@ -7,6 +7,9 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=root      
     ports:
-      - "5432:5432"
+      - "5436:5432"
     volumes:
-      - ./internal/infrastructure/persistence/migration/init-database.sql:/docker-entrypoint-initdb.d/init-database.sql   
+      - ./postgres_data:/var/lib/postgres
+
+volumes:
+  postgres_data:

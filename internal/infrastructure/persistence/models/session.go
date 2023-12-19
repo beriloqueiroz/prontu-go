@@ -1,33 +1,36 @@
 package infrastructure
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Session struct {
-	Id              string        `json:"id"`
-	PatientIds      []string      `json:"patientIds"`
-	ProfessionalIds []string      `json:"ProfessionalIds"`
-	StartDate       time.Time     `json:"startDate"`
-	TimeInMinutes   time.Duration `json:"timeInMinutes"`
-	Amount          float64       `json:"amount"`
-	EndDate         time.Time     `json:"endDate"`
-	Notes           string        `json:"notes"`
-	Cids            []Cid         `json:"cids"`
-	Forms           []Form        `json:"forms"`
+	gorm.Model
+	Id            string        `gorm:"primaryKey"`
+	Patients      Patients      `gorm:"type:VARCHAR(255)"`
+	Professionals Professionals `gorm:"type:VARCHAR(255)"`
+	StartDate     time.Time
+	TimeInMinutes time.Duration
+	Amount        float64
+	EndDate       time.Time
+	Notes         string
+	Cids          []Cid `gorm:"foreignKey:SessionId"`
+	Forms         string
 }
+
+type Patients []string
+type Professionals []string
 
 type Cid struct {
-	Id          string `json:"id"`
-	PatientId   string `json:"patientId"`
-	Code        string `json:"code"`
-	Name        string `json:"name"`
-	Observation string `json:"observation"`
-}
-
-type Form struct {
-	Id        string `json:"id"`
-	PatientId string `json:"patientId"`
-	Name      string `json:"name"`
-	Link      string `json:"link"`
+	gorm.Model
+	Id          uint `gorm:"primaryKey;autoIncrement";`
+	PatientId   string
+	Code        string
+	Name        string
+	Observation string
+	SessionId   string
 }
 
 var Sessions []Session
