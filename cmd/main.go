@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	routes "github.com/beriloqueiroz/prontu-go/internal/infrastructure/api/routes"
-	migration "github.com/beriloqueiroz/prontu-go/internal/infrastructure/persistence/migration"
+	database "github.com/beriloqueiroz/prontu-go/internal/infrastructure/persistence"
 )
 
 func main() {
 	fmt.Println("Iniciando o servidor")
-	migration.InitMigration()
+	database.ConectaComBancoDeDados()
 	routes.HandleRequest()
 }

@@ -9,18 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitMigration() {
+var (
+	DB  *gorm.DB
+	err error
+)
 
+func ConectaComBancoDeDados() {
 	dsn := "host=localhost user=root password=root dbname=root port=5436 sslmode=disable TimeZone=America/Fortaleza"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
-
-	// Migrate the schema
-	db.AutoMigrate(&models.Session{}, &models.Patient{}, &models.Professional{}) //todo ver como tirar auto e rodar pelo .sql
-	seed(db)
+	DB.AutoMigrate(&models.Session{}, &models.Patient{}, &models.Professional{}) //todo ver como tirar auto e rodar pelo .sql
+	// seed(DB)
 }
 
 func seed(db *gorm.DB) {
