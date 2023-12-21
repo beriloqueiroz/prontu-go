@@ -21,7 +21,7 @@ func ConectaComBancoDeDados() {
 		panic("failed to connect database")
 	}
 	DB.AutoMigrate(&models.Session{}, &models.Patient{}, &models.Professional{}) //todo ver como tirar auto e rodar pelo .sql
-	// seed(DB)
+	seed(DB)
 }
 
 func seed(db *gorm.DB) {
@@ -42,6 +42,8 @@ func seed(db *gorm.DB) {
 			Notes:         "ta dnalsnda",
 			Cids:          "Ass1, 123",
 			Forms:         "1jabskdjas.ndaslk",
+			Origin:        "none",
+			Location:      "",
 		},
 		{
 			Id: "2",
@@ -59,6 +61,8 @@ func seed(db *gorm.DB) {
 			Notes:         "ta kbhkb",
 			Cids:          "Ass1, 123",
 			Forms:         "1jabskdjas.ndaslaaaaak",
+			Location:      "",
+			Origin:        "none",
 		},
 	}
 	db.Create(Sessions)

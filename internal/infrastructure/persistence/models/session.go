@@ -6,6 +6,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type Origin string
+
+const (
+	Google Origin = "google"
+	None   Origin = "none"
+)
+
 type Session struct {
 	gorm.Model
 	Id            string `gorm:"primaryKey"`
@@ -18,6 +25,9 @@ type Session struct {
 	Notes         string
 	Cids          string
 	Forms         string
+	Origin        Origin
+	ExternalId    string
+	Location      string
 }
 
 type Patient struct {

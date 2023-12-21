@@ -11,6 +11,9 @@ CREATE TABLE "public"."sessions" (
   "notes" text NULL,
   "cids" text NULL,
   "forms" text NULL,
+  "origin" text NULL,
+  "external_id" text NULL,
+  "location" text NULL,
   PRIMARY KEY ("id")
 );
 -- Create index "idx_sessions_deleted_at" to table: "sessions"
