@@ -6,8 +6,11 @@ import (
 
 	controllers "github.com/beriloqueiroz/prontu-go/internal/infrastructure/api/controller"
 	middleware "github.com/beriloqueiroz/prontu-go/internal/infrastructure/api/middleware"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
+
+var allowOrigins = []string{"*"} //todo specify
 
 func HandleRequest() {
 	r := mux.NewRouter()
@@ -17,5 +20,5 @@ func HandleRequest() {
 	r.HandleFunc("/api/sessions/{id}", controllers.DeleteSession).Methods("DELETE")
 	r.HandleFunc("/api/sessions", controllers.CreateSession).Methods("POST")
 	r.HandleFunc("/api/sessions", controllers.UpdateSession).Methods("PUT")
-	log.Fatal(http.ListenAndServe(":8000", r))
+	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(handlers.AllowedOrigins(allowOrigins))(r)))
 }
