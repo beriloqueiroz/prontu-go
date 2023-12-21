@@ -30,6 +30,31 @@ type Session struct {
 	Location      string
 }
 
+func (s *Session) Validate() (valid bool, msg string) {
+	msg, valid = "", true
+	if s.StartDate.Before(time.Now()) {
+		msg += msg + "Data inicial inválida; "
+		valid = false
+	}
+	if s.EndDate.Before(time.Now()) {
+		msg += msg + "Data final inválida; "
+		valid = false
+	}
+	if s.Amount < 0 {
+		msg += msg + "Valor inválido; "
+		valid = false
+	}
+	if len(s.Patients) == 0 {
+		msg += msg + "Nenhum paciente selecionado; "
+		valid = false
+	}
+	if len(s.Professionals) == 0 {
+		msg += msg + "Nenhum profissional selecionado; "
+		valid = false
+	}
+	return valid, msg
+}
+
 type Patient struct {
 	gorm.Model
 	Id        uint `gorm:"primaryKey;autoIncrement"`

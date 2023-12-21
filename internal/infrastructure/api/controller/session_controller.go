@@ -37,3 +37,40 @@ func GetSessionById(w http.ResponseWriter, r *http.Request) {
 	database.DB.First(&session, id)
 	json.NewEncoder(w).Encode(session)
 }
+
+func CreateSession(w http.ResponseWriter, r *http.Request) {
+	var newSession models.Session
+	json.NewDecoder(r.Body).Decode(&newSession)
+	valid, msg := newSession.Validate()
+	if !valid {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("400 - Something bad happened! - " + msg))
+		return
+	}
+	database.DB.Create(&newSession)
+	json.NewEncoder(w).Encode(newSession)
+}
+
+func DeleteSession(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	var session models.Session
+	database.DB.Delete(&session, id)
+	json.NewEncoder(w).Encode(session)
+}
+
+func UpdateSession(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	var session models.Session
+	database.DB.First(&session, id)
+	json.NewDecoder(r.Body).Decode(&session)
+	valid, msg := session.Validate()
+	if !valid {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("400 - Something bad happened! - " + msg))
+		return
+	}
+	database.DB.Save(&session)
+	json.NewEncoder(w).Encode(&session)
+}

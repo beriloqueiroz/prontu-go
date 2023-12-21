@@ -21,7 +21,7 @@ func ConectaComBancoDeDados() {
 		panic("failed to connect database")
 	}
 	DB.AutoMigrate(&models.Session{}, &models.Patient{}, &models.Professional{}) //todo ver como tirar auto e rodar pelo .sql
-	seed(DB)
+	// seed(DB)
 }
 
 func seed(db *gorm.DB) {
