@@ -8,6 +8,8 @@ import (
 	database "github.com/beriloqueiroz/prontu-go/internal/infrastructure/persistence"
 	models "github.com/beriloqueiroz/prontu-go/internal/infrastructure/persistence/models"
 	"github.com/gorilla/mux"
+
+	"github.com/google/uuid"
 )
 
 func GetSessions(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +24,41 @@ func GetSessions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var sessions []models.Session
-	database.DB.Limit(sizeInt).Offset(pageInt).Find(&sessions)
+	database.DB.Limit(sizeInt).Offset(pageInt).Preload("Patients").Offset(pageInt).Preload("Professionals").Find(&sessions)
+	json.NewEncoder(w).Encode(sessions)
+}
+
+// todo filtrar
+func GetSessionsByProfessional(w http.ResponseWriter, r *http.Request) {
+	page := r.URL.Query().Get("page")
+	size := r.URL.Query().Get("size")
+	pageInt, errP := strconv.Atoi(page)
+	sizeInt, errS := strconv.Atoi(size)
+
+	if errP != nil || errS != nil {
+		pageInt = 0
+		sizeInt = 100
+	}
+
+	var sessions []models.Session
+	database.DB.Where(" <> ?", "jinzhu").Limit(sizeInt).Preload("Patients").Offset(pageInt).Preload("Professionals").Offset(pageInt).Find(&sessions)
+	json.NewEncoder(w).Encode(sessions)
+}
+
+// todo filtrar
+func GetSessionsByProfessionalAndPatient(w http.ResponseWriter, r *http.Request) {
+	page := r.URL.Query().Get("page")
+	size := r.URL.Query().Get("size")
+	pageInt, errP := strconv.Atoi(page)
+	sizeInt, errS := strconv.Atoi(size)
+
+	if errP != nil || errS != nil {
+		pageInt = 0
+		sizeInt = 100
+	}
+
+	var sessions []models.Session
+	database.DB.Limit(sizeInt).Offset(pageInt).Preload("Patients").Offset(pageInt).Preload("Professionals").Find(&sessions)
 	json.NewEncoder(w).Encode(sessions)
 }
 
@@ -43,6 +79,7 @@ func CreateSession(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(DefaultError{Title: "400 - Something bad happened! - " + msg})
 		return
 	}
+	newSession.Id = uuid.NewString()
 	database.DB.Create(&newSession)
 	json.NewEncoder(w).Encode(newSession)
 }

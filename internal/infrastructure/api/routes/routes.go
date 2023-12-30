@@ -16,6 +16,8 @@ func HandleRequest() {
 	r := mux.NewRouter()
 	r.Use(middleware.ContentTypeMiddleware)
 	r.HandleFunc("/api/sessions", controllers.GetSessions).Methods("GET")
+	r.HandleFunc("/api/sessions/professional/{id}", controllers.GetSessionsByProfessional).Methods("GET")
+	r.HandleFunc("/api/sessions/professional/{professionalId}/{patientId}", controllers.GetSessionsByProfessionalAndPatient).Methods("GET")
 	r.HandleFunc("/api/sessions/{id}", controllers.GetSessionById).Methods("GET")
 	r.HandleFunc("/api/sessions/{id}", controllers.DeleteSession).Methods("DELETE")
 	r.HandleFunc("/api/sessions", controllers.CreateSession).Methods("POST")
