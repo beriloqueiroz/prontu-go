@@ -14,3 +14,7 @@ type SessionControllerDto struct {
 	Cids            []string      `json:"cids"`
 	Forms           []string      `json:"forms"`
 }
+
+type DefaultError struct {
+	Title string `json:"title"`
+}

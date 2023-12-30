@@ -15,7 +15,7 @@ var (
 )
 
 func ConectaComBancoDeDados() {
-	dsn := "host=localhost user=root password=root dbname=root port=5436 sslmode=disable TimeZone=America/Fortaleza"
+	dsn := "host=localhost user=teste password=teste dbname=prontu_db port=5432 sslmode=disable TimeZone=America/Fortaleza"
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")

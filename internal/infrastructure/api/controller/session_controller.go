@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -14,8 +13,6 @@ import (
 func GetSessions(w http.ResponseWriter, r *http.Request) {
 	page := r.URL.Query().Get("page")
 	size := r.URL.Query().Get("size")
-	fmt.Printf("page: %v\n", page)
-	fmt.Printf("size: %v\n", size)
 	pageInt, errP := strconv.Atoi(page)
 	sizeInt, errS := strconv.Atoi(size)
 
@@ -26,7 +23,6 @@ func GetSessions(w http.ResponseWriter, r *http.Request) {
 
 	var sessions []models.Session
 	database.DB.Limit(sizeInt).Offset(pageInt).Find(&sessions)
-	fmt.Println(sessions)
 	json.NewEncoder(w).Encode(sessions)
 }
 
@@ -44,7 +40,7 @@ func CreateSession(w http.ResponseWriter, r *http.Request) {
 	valid, msg := newSession.Validate()
 	if !valid {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("400 - Something bad happened! - " + msg))
+		json.NewEncoder(w).Encode(DefaultError{Title: "400 - Something bad happened! - " + msg})
 		return
 	}
 	database.DB.Create(&newSession)
@@ -68,7 +64,7 @@ func UpdateSession(w http.ResponseWriter, r *http.Request) {
 	valid, msg := session.Validate()
 	if !valid {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("400 - Something bad happened! - " + msg))
+		json.NewEncoder(w).Encode(DefaultError{Title: "400 - Something bad happened! - " + msg})
 		return
 	}
 	database.DB.Save(&session)

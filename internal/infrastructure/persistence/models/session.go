@@ -36,7 +36,7 @@ func (s *Session) Validate() (valid bool, msg string) {
 		msg += msg + "Data inicial inválida; "
 		valid = false
 	}
-	if s.EndDate.Before(time.Now()) {
+	if !s.EndDate.IsZero() && s.EndDate.Before(time.Now()) {
 		msg += msg + "Data final inválida; "
 		valid = false
 	}
