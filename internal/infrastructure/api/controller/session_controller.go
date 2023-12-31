@@ -24,11 +24,10 @@ func GetSessions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var sessions []models.Session
-	database.DB.Limit(sizeInt).Offset(pageInt).Preload("Patients").Offset(pageInt).Preload("Professionals").Find(&sessions)
+	database.DB.Limit(sizeInt).Offset(pageInt).Preload("Patients").Preload("Professionals").Find(&sessions)
 	json.NewEncoder(w).Encode(sessions)
 }
 
-// todo filtrar
 func GetSessionsByProfessional(w http.ResponseWriter, r *http.Request) {
 	page := r.URL.Query().Get("page")
 	size := r.URL.Query().Get("size")
@@ -40,12 +39,14 @@ func GetSessionsByProfessional(w http.ResponseWriter, r *http.Request) {
 		sizeInt = 100
 	}
 
+	vars := mux.Vars(r)
+	id := vars["id"]
+
 	var sessions []models.Session
-	database.DB.Where(" <> ?", "jinzhu").Limit(sizeInt).Preload("Patients").Offset(pageInt).Preload("Professionals").Offset(pageInt).Find(&sessions)
+	database.DB.Limit(sizeInt).Preload("Patients").Offset(pageInt).Preload("Professionals").Joins("JOIN professionals p ON p.session_id = sessions.id AND p.professional_id = ?", id).Find(&sessions)
 	json.NewEncoder(w).Encode(sessions)
 }
 
-// todo filtrar
 func GetSessionsByProfessionalAndPatient(w http.ResponseWriter, r *http.Request) {
 	page := r.URL.Query().Get("page")
 	size := r.URL.Query().Get("size")
@@ -57,8 +58,12 @@ func GetSessionsByProfessionalAndPatient(w http.ResponseWriter, r *http.Request)
 		sizeInt = 100
 	}
 
+	vars := mux.Vars(r)
+	professionalId := vars["professionalId"]
+	patientId := vars["patientId"]
+
 	var sessions []models.Session
-	database.DB.Limit(sizeInt).Offset(pageInt).Preload("Patients").Offset(pageInt).Preload("Professionals").Find(&sessions)
+	database.DB.Limit(sizeInt).Offset(pageInt).Preload("Patients").Preload("Professionals").Joins("JOIN professionals p ON p.session_id = sessions.id").Joins("JOIN patients pat ON pat.session_id = sessions.id").Where("p.professional_id=? AND pat.patient_id=?", professionalId, patientId).Find(&sessions)
 	json.NewEncoder(w).Encode(sessions)
 }
 
@@ -66,7 +71,7 @@ func GetSessionById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	var session models.Session
-	database.DB.First(&session, id)
+	database.DB.Preload("Patients").Preload("Professionals").First(&session, id)
 	json.NewEncoder(w).Encode(session)
 }
 
