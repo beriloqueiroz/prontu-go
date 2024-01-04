@@ -2,7 +2,9 @@ package infrastructure
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"slices"
 	"strconv"
 
 	database "github.com/beriloqueiroz/prontu-go/internal/infrastructure/persistence"
@@ -71,7 +73,7 @@ func GetSessionById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	var session models.Session
-	database.DB.Preload("Patients").Preload("Professionals").First(&session, id)
+	database.DB.Preload("Patients").Preload("Professionals").First(&session, "id = ?", id)
 	json.NewEncoder(w).Encode(session)
 }
 
@@ -93,7 +95,27 @@ func DeleteSession(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	var session models.Session
-	database.DB.Delete(&session, id)
+	database.DB.Delete(&session, "id = ?", id)
+	json.NewEncoder(w).Encode(session)
+}
+
+func DeleteSessionByProfessional(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	professionalId := vars["professionalId"]
+	var session models.Session
+	database.DB.Preload("Professionals").First(&session, "id = ?", id)
+
+	fmt.Println(session)
+
+	if !slices.ContainsFunc(session.Professionals, func(p models.Professional) bool {
+		return p.ProfessionalId == professionalId
+	}) {
+		json.NewEncoder(w).Encode(DefaultError{Title: "400 - Something bad happened! - professional inválido"})
+		return
+	}
+
+	database.DB.Delete(&session, "id = ?", id)
 	json.NewEncoder(w).Encode(session)
 }
 

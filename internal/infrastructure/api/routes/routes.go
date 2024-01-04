@@ -20,6 +20,7 @@ func HandleRequest() {
 	r.HandleFunc("/api/sessions/professional/{professionalId}/{patientId}", controllers.GetSessionsByProfessionalAndPatient).Methods("GET")
 	r.HandleFunc("/api/sessions/{id}", controllers.GetSessionById).Methods("GET")
 	r.HandleFunc("/api/sessions/{id}", controllers.DeleteSession).Methods("DELETE")
+	r.HandleFunc("/api/sessions/professional/{professionalId}/{id}", controllers.DeleteSessionByProfessional).Methods("DELETE")
 	r.HandleFunc("/api/sessions", controllers.CreateSession).Methods("POST")
 	r.HandleFunc("/api/sessions", controllers.UpdateSession).Methods("PUT")
 	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(handlers.AllowedOrigins(allowOrigins))(r)))
