@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"slices"
 	"strconv"
@@ -74,6 +73,15 @@ func GetSessionById(w http.ResponseWriter, r *http.Request) {
 	id := vars["id"]
 	var session models.Session
 	database.DB.Preload("Patients").Preload("Professionals").First(&session, "id = ?", id)
+
+	professionalId := r.Header.Get("professionalId")
+	if !slices.ContainsFunc(session.Professionals, func(p models.Professional) bool {
+		return p.ProfessionalId == professionalId
+	}) {
+		json.NewEncoder(w).Encode(DefaultError{Title: "400 - Something bad happened! - professional inválido"})
+		return
+	}
+
 	json.NewEncoder(w).Encode(session)
 }
 
@@ -106,8 +114,6 @@ func DeleteSessionByProfessional(w http.ResponseWriter, r *http.Request) {
 	var session models.Session
 	database.DB.Preload("Professionals").First(&session, "id = ?", id)
 
-	fmt.Println(session)
-
 	if !slices.ContainsFunc(session.Professionals, func(p models.Professional) bool {
 		return p.ProfessionalId == professionalId
 	}) {
@@ -123,7 +129,17 @@ func UpdateSession(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	var session models.Session
-	database.DB.First(&session, id)
+
+	database.DB.Preload("Patients").Preload("Professionals").First(&session, "id = ?", id)
+
+	professionalId := r.Header.Get("professionalId")
+	if !slices.ContainsFunc(session.Professionals, func(p models.Professional) bool {
+		return p.ProfessionalId == professionalId
+	}) {
+		json.NewEncoder(w).Encode(DefaultError{Title: "400 - Something bad happened! - professional inválido"})
+		return
+	}
+
 	json.NewDecoder(r.Body).Decode(&session)
 	valid, msg := session.Validate()
 	if !valid {

@@ -32,14 +32,14 @@ type Session struct {
 
 func (s *Session) Validate() (valid bool, msg string) {
 	msg, valid = "", true
-	if s.StartDate.Before(time.Now()) {
-		msg += msg + "Data inicial inválida; "
-		valid = false
-	}
-	if !s.EndDate.IsZero() && s.EndDate.Before(time.Now()) {
-		msg += msg + "Data final inválida; "
-		valid = false
-	}
+	// if s.StartDate.Before(time.Now()) {
+	// 	msg += msg + "Data inicial inválida; "
+	// 	valid = false
+	// }
+	// if !s.EndDate.IsZero() && s.EndDate.Before(time.Now()) {
+	// 	msg += msg + "Data final inválida; "
+	// 	valid = false
+	// }
 	if s.Amount < 0 {
 		msg += msg + "Valor inválido; "
 		valid = false

@@ -22,6 +22,6 @@ func HandleRequest() {
 	r.HandleFunc("/api/sessions/{id}", controllers.DeleteSession).Methods("DELETE")
 	r.HandleFunc("/api/sessions/professional/{professionalId}/{id}", controllers.DeleteSessionByProfessional).Methods("DELETE")
 	r.HandleFunc("/api/sessions", controllers.CreateSession).Methods("POST")
-	r.HandleFunc("/api/sessions", controllers.UpdateSession).Methods("PUT")
+	r.HandleFunc("/api/sessions/{id}", controllers.UpdateSession).Methods("PUT")
 	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(handlers.AllowedOrigins(allowOrigins))(r)))
 }
