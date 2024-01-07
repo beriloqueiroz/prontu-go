@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"log"
 	"net/http"
+	"os"
 
 	controllers "github.com/beriloqueiroz/prontu-go/internal/infrastructure/api/controller"
 	middleware "github.com/beriloqueiroz/prontu-go/internal/infrastructure/api/middleware"
@@ -13,6 +14,7 @@ import (
 var allowOrigins = []string{"*"} //todo specify
 
 func HandleRequest() {
+	port := os.Getenv("PORT")
 	r := mux.NewRouter()
 	r.Use(middleware.ContentTypeMiddleware)
 	r.HandleFunc("/api/sessions", controllers.GetSessions).Methods("GET")
@@ -23,5 +25,5 @@ func HandleRequest() {
 	r.HandleFunc("/api/sessions/professional/{professionalId}/{id}", controllers.DeleteSessionByProfessional).Methods("DELETE")
 	r.HandleFunc("/api/sessions", controllers.CreateSession).Methods("POST")
 	r.HandleFunc("/api/sessions/{id}", controllers.UpdateSession).Methods("PUT")
-	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(handlers.AllowedOrigins(allowOrigins))(r)))
+	log.Fatal(http.ListenAndServe(":"+port, handlers.CORS(handlers.AllowedOrigins(allowOrigins))(r)))
 }
