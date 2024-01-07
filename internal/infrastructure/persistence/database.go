@@ -16,12 +16,7 @@ var (
 )
 
 func ConectaComBancoDeDados() {
-	host := os.Getenv("DB_HOST")
-	user := os.Getenv("DB_USER")
-	pass := os.Getenv("DB_PASS")
-	port := os.Getenv("DB_PORT")
-	dbname := os.Getenv("DB_NAME")
-	dsn := "host=" + host + " user=" + user + " password=" + pass + " dbname=" + dbname + " port=" + port + " sslmode=disable TimeZone=America/Fortaleza"
+	dsn := os.Getenv("DB_CONN")
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
